@@ -57,6 +57,8 @@ class Broker(BrokerBase):
             )
         )
 
-    def get_repo(self) -> str:
-        return json.dumps(todict(self.repo), default=str)
-
+    def get_commands_queue(self, clear: bool=True) -> str:
+        repo_dict = todict(self.repo)
+        if clear:
+            self.repo = Repository()
+        return repo_dict

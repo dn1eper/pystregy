@@ -1,7 +1,6 @@
 from datetime import datetime
 from pystregy.model.strategy import StrategyBase, StrategyRef
 from pystregy.client import Client
-import itertools
 
 class Trader():
     def __init__(self, is_remote: bool=True):
@@ -14,13 +13,9 @@ class Trader():
         self._service_url = service_url
         self._service = Client(service_url, token)
 
-    def addstrategy(self, strategy: type, *args, **kwargs):
-        self._strats.append((strategy, args, kwargs))
+    def addstrategy(self, strategy_ref: StrategyRef, *args, **kwargs):
+        self._strats.append(strategy_ref)
         return len(self._strats) - 1
-
-    def addstrategy_ref(self, strategy_ref: StrategyRef, *args, **kwargs):
-        self._strats.append((strategy_ref, args, kwargs))
-        return len(self._starts) - 1
 
     def run(self):
         pass
@@ -36,18 +31,7 @@ class Trader():
 
     def _backtest_remote(self, symbol: str, start: datetime, end: datetime):
 
-        iterstrats = itertools.product(*self._strats)
-        for stratcls, sargs, skwargs in iterstrats:
-            strat_ref = None
-            if isinstance(stratcls, StrategyBase):
-                strat_ref = self._service.create_strategy(stratcls)
-            elif isinstance(stratcls, StrategyRef):
-                strat_ref = stratcls
-            else:
-                raise ValueError("not compatible strategy type")
-
-            backtest_execution_id = self._service.run_backtester(strat_ref)
+        for strat in self._strats:
+            execution_id = self._service.execute_strategy(strat)
             
-            
-
             

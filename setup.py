@@ -10,7 +10,7 @@ setup(
     author_email='andneprovskii@gmail.com',
     packages=['pystregy', 'pystregy.model', 'pystregy.goadapter'],
     install_requires=['stickytape', 'nose'],
-    version='0.0.2',
+    version='0.0.3',
     license='MIT',
     description='Python client for Stregy',
     long_description=long_description,

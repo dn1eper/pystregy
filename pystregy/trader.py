@@ -6,11 +6,9 @@ class Trader():
     def __init__(self, is_remote: bool=True):
         self._strats = list()
         self._service = None
-        self._service_url = None
         self._is_remote = is_remote
 
     def connect(self, service_url: str, token: str):
-        self._service_url = service_url
         self._service = Client(service_url, token)
 
     def addstrategy(self, strategy_ref: StrategyRef, *args, **kwargs):

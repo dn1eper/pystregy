@@ -36,7 +36,7 @@ def _create_bundle(strategy_type: type, resource_paths: Dict[str, str], *args, *
     init_strategy_code = f"""
 import base64
 from pystregy.goadapter import GoBroker
-from pystregy.model import Order, Position
+from pystregy.model import Order, Position, Quote
 from pystregy.utils import tojson
 
 __resources = dict((_k, base64.b64decode(_v)) for _k, _v in {resources}.items())
@@ -49,6 +49,10 @@ def notify_position(position: Position) -> str:
 
 def notify_order(order: Order) -> str: 
     __strategy.notify_order(order)
+    return tojson(__broker.get_commands_queue())
+
+def notify_quote(quote: Quote) -> str: 
+    __strategy.notify_quote(quote)
     return tojson(__broker.get_commands_queue())
 """
     return source_bundle + init_strategy_code

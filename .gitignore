@@ -4,4 +4,6 @@ build
 *.egg-info
 
 examples
+api_key.txt
 tests/resources
+venv/

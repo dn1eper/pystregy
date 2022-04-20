@@ -1,15 +1,18 @@
+import logging
+import requests
 from datetime import datetime
 from pystregy.model.strategy import StrategyBase, StrategyRef
 from pystregy.client import Client
 
 class Trader():
     def __init__(self, is_remote: bool=True):
-        self._strats = list()
+        self._strats = []
         self._service = None
         self._is_remote = is_remote
 
-    def connect(self, service_url: str, token: str):
-        self._service = Client(service_url, token)
+    def connect(self, service_url: str, api_key: str, exg_acc_id: str) -> bool:
+        self._service = Client(service_url, api_key, exg_acc_id)
+        return self._service.connect()        
 
     def addstrategy(self, strategy_ref: StrategyRef, *args, **kwargs):
         self._strats.append(strategy_ref)
@@ -18,18 +21,20 @@ class Trader():
     def run(self):
         pass
 
-    def backtest(self, symbol: str, start: datetime, end: datetime):
+    def backtest(self, symbol: str, timeframe: int, start: datetime, end: datetime):
+        if (24 * 60 * 60) % timeframe != 0:
+            logging.error('incorrect timeframe (86400 % timeframe should be zero)')            
+            
         if self._is_remote:
-            self._backtest_remote(symbol, start, end)
+            self._backtest_remote(symbol, timeframe, start, end)
         else:
-            self._backtest_local(symbol, start, end)
+            self._backtest_local(symbol, timeframe, start, end)
 
-    def _backtest_local(self, symbol: str, start: datetime, end: datetime):
+    def _backtest_local(self, symbol: str, timeframe: str, start: datetime, end: datetime):
         raise NotImplementedError()
 
-    def _backtest_remote(self, symbol: str, start: datetime, end: datetime):
-
+    def _backtest_remote(self, symbol: str, timeframe: str, start: datetime, end: datetime):
         for strat in self._strats:
-            execution_id = self._service.execute_strategy(strat)
+            self._service.execute_strategy(strat, symbol, timeframe, start, end)
             
             

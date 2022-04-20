@@ -10,8 +10,8 @@ class Trader():
         self._service = None
         self._is_remote = is_remote
 
-    def connect(self, service_url: str, api_key: str, exg_acc_id: str) -> bool:
-        self._service = Client(service_url, api_key, exg_acc_id)
+    def connect(self, host: str, port: str, api_key: str, exg_acc_id=None) -> bool:
+        self._service = Client(host, port, api_key, exg_acc_id)
         return self._service.connect()        
 
     def addstrategy(self, strategy_ref: StrategyRef, *args, **kwargs):
@@ -35,6 +35,6 @@ class Trader():
 
     def _backtest_remote(self, symbol: str, timeframe: str, start: datetime, end: datetime):
         for strat in self._strats:
-            self._service.execute_strategy(strat, symbol, timeframe, start, end)
+            self._service.execute_strategy(strat, symbol, timeframe, start, end, backtest=True)
             
             

@@ -7,22 +7,20 @@ from pystregy.model import StrategyBase, StrategyRef
 from pystregy.strategy_builder import build_strategy
 
 class Client():
-    def __init__(self, url: str, api_key: str, exg_acc_id: str):
-        self._url = url
+    def __init__(self, host: str, port: str, api_key: str, exg_acc_id: str):
+        self._host = host
+        self._port = port
+        self._url = f'http://{host}:{port}/api'
         self._API_KEY = api_key
         self._exg_acc_id = exg_acc_id
 
     def connect(self): 
-        """Check server is up and api key is valid by fetching exhange account info."""
-        headers = {'X-API-Key': self._API_KEY}
-        r = requests.get(
-            self._url + f'/exchange-account?id={self._exg_acc_id}',
-            headers=headers
-        )
-        if r.status_code != 200:
-            if "error" in r.json():
-                err_message = r.json()["error"]
-            raise Exception(f'Error fetching exchange account info: {err_message}')            
+        """Check server is up."""
+        import socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex((self._host, self._port))
+        if result != 0:
+            raise Exception('Could not connect to server.')
 
     def _create_strategy(self, sref: StrategyRef) -> str:
         strategy_lib = build_strategy(sref.type, sref.resources, *sref.args, **sref.kwargs)      
@@ -54,7 +52,8 @@ class Client():
 
     def execute_strategy(
         self, strategy_ref: StrategyRef, symbol: str, 
-        timeframe: str, start: datetime, end: datetime
+        timeframe: str, start: datetime, end: datetime,
+        backtest: bool
     ) -> str | None:
         """Returns strategy execution id if executed successfuly, None otherwise."""
         if strategy_ref.id is None:
@@ -64,15 +63,21 @@ class Client():
 
         headers = {'X-API-Key': self._API_KEY, 'Content-Type': 'application/json'}
         json_data = {
-            'strategy_id': strategy_ref.id,
-            'exchange_account_id': self._exg_acc_id,
+            'strategy_id': strategy_ref.id,            
             'timeframe': timeframe,
             'symbol': symbol,
             'start_date': start.strftime('%Y-%m-%d'),
             'end_date': end.strftime('%Y-%m-%d')            
         }
 
-        resp = requests.post(self._url + '/backtest', headers=headers, json=json_data)
+        if backtest:
+            url = self._url + '/backtest'
+        else:
+            url = self._url + '/live-trade'
+            json_data |= {'exchange_account_id': self._exg_acc_id}
+            raise NotImplementedError()
+
+        resp = requests.post(url, headers=headers, json=json_data)
 
         if resp.status_code != 200:
             logging.error(f'error executing strategy: {resp.json()["error"]}')

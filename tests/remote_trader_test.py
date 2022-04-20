@@ -23,9 +23,9 @@ def remote_trader():
     trader.addstrategy(strategy_ref)
 
     trader.connect(
-        service_url="http://localhost:1234/api", 
+        host='localhost',
+        port=1234,
         api_key=API_KEY, 
-        exg_acc_id='b022e55a-2560-4914-a334-c88a8ab4f50a'
     )
 
     start_date = datetime(2005, 7, 14)

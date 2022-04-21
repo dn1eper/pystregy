@@ -26,7 +26,12 @@ class Client():
         strategy_lib = build_strategy(sref.type, sref.resources, *sref.args, **sref.kwargs)      
         
         headers = {'X-API-Key': self._API_KEY}        
-        data = {'name': sref.name, 'description': sref.description}
+        data = dict()
+        if hasattr(sref, 'name'):
+            data |= {'name': sref.name}
+        if hasattr(sref, 'description'):
+            data |= {'description': sref.description}
+        
         files = {
             'json': (None, json.dumps(data), 'application/json'),
             'file': (None, strategy_lib, 'application/octet-stream')
@@ -37,9 +42,9 @@ class Client():
             err_message = ''
             if "error" in r.json():
                 err_message = r.json()["error"]
-            raise Exception(f'Error creating startegy "{sref.name}": {err_message}')            
+            raise Exception(f'Error creating startegy "{sref.name if hasattr(sref, "name") else ""}": {err_message}')            
         else:
-            logging.info(f'Strategy "{sref.name}" id: {r.json()["strategy_id"]}')
+            logging.info(f'Strategy "{sref.name if hasattr(sref, "name") else ""}" id: {r.json()["strategy_id"]}')
 
         return r.json()["strategy_id"]
 
@@ -52,14 +57,12 @@ class Client():
 
     def execute_strategy(
         self, strategy_ref: StrategyRef, symbol: str, 
-        timeframe: str, start: datetime, end: datetime,
+        timeframe: int, start: datetime, end: datetime,
         backtest: bool
     ) -> str | None:
         """Returns strategy execution id if executed successfuly, None otherwise."""
         if strategy_ref.id is None:
             strategy_ref.id = self._create_strategy(strategy_ref)
-            if strategy_ref.id is None:
-                return
 
         headers = {'X-API-Key': self._API_KEY, 'Content-Type': 'application/json'}
         json_data = {
@@ -82,7 +85,7 @@ class Client():
         if resp.status_code != 200:
             logging.error(f'error executing strategy: {resp.json()["error"]}')
             return
-        return resp.json()['strategy_execution_id']
+        return resp.json()['backtest_id']
         
 
 

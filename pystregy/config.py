@@ -1,4 +1,1 @@
-import os 
-dir_path = os.path.dirname(os.path.realpath(__file__))  
-with open(dir_path + '/api_key.txt', 'r') as f:
-    API_KEY = f.read()
+API_KEY = 'e392e22c-e593-4974-b10e-3b97241d8ceb'

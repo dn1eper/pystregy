@@ -21,20 +21,20 @@ class Trader():
     def run(self):
         pass
 
-    def backtest(self, symbol: str, timeframe: int, start: datetime, end: datetime):
-        if (24 * 60 * 60) % timeframe != 0:
+    def backtest(self, symbol: str, timeframe_sec: int, start: datetime, end: datetime):
+        if (24 * 60 * 60) % timeframe_sec != 0:
             logging.error('incorrect timeframe (86400 % timeframe should be zero)')            
             
         if self._is_remote:
-            self._backtest_remote(symbol, timeframe, start, end)
+            self._backtest_remote(symbol, timeframe_sec, start, end)
         else:
-            self._backtest_local(symbol, timeframe, start, end)
+            self._backtest_local(symbol, timeframe_sec, start, end)
 
-    def _backtest_local(self, symbol: str, timeframe: str, start: datetime, end: datetime):
+    def _backtest_local(self, symbol: str, timeframe_sec: int, start: datetime, end: datetime):
         raise NotImplementedError()
 
-    def _backtest_remote(self, symbol: str, timeframe: str, start: datetime, end: datetime):
+    def _backtest_remote(self, symbol: str, timeframe_sec: int, start: datetime, end: datetime):
         for strat in self._strats:
-            self._service.execute_strategy(strat, symbol, timeframe, start, end, backtest=True)
+            self._service.execute_strategy(strat, symbol, timeframe_sec, start, end, backtest=True)
             
             

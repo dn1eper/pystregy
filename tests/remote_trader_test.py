@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from nose.tools import istest, nottest, assert_equal
 
@@ -10,11 +11,11 @@ from tests.scripts.strategy_test import StrategyTest
 
 @istest
 def remote_trader():
+    logging.basicConfig(level=logging.INFO)
+
     name = 'my strategy'
     description = 'strategy description'
     strategy_ref = StrategyRef(
-        name=name,
-        description=description,
         strategy_type=StrategyTest,
         resources={"model" :"./tests/resources/saved_model.pb"},        
     )
@@ -31,4 +32,4 @@ def remote_trader():
     start_date = datetime(2005, 7, 14)
     end_date = datetime(2005, 7, 15)
 
-    trader.backtest(symbol="BTCUSDT", timeframe=5, start=start_date, end=end_date)
+    trader.backtest(symbol="BTCUSDT", timeframe_sec=5*60, start=start_date, end=end_date)

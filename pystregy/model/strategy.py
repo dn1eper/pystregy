@@ -18,6 +18,7 @@ class StrategyRef():
 
     def set_description(self, description: str):
         self.description = description
+    
 
 class StrategyBase():
     def __init__(self, broker: BrokerBase, resources: Dict[str, str]):

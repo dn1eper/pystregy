@@ -1,5 +1,4 @@
 from enum import IntEnum
-from decimal import Decimal
 
 class Status(IntEnum):
     CREATED = 0
@@ -13,7 +12,7 @@ class Status(IntEnum):
 class Order():
     __slots__ = 'id', 'price', 'size', 'status'
 
-    def __init__(self, id: int, price: Decimal, size: float):
+    def __init__(self, id: int, price: float, size: float):
         self.id = id
         self.price = price
         self.size = size

@@ -1,14 +1,13 @@
-from decimal import Decimal
 from datetime import datetime
 from .position import Position
 from .order import Order
 
 class BrokerBase:
     # actions
-    def sell(self, open_price: Decimal, profit_price: Decimal, loss_price: Decimal, expiration: datetime):
+    def sell(self, open_price: float, profit_price: float, loss_price: float, expiration: datetime):
         pass
 
-    def buy(self, open_price: Decimal, profit_price: Decimal, loss_price: Decimal, expiration: datetime):
+    def buy(self, open_price: float, profit_price: float, loss_price: float, expiration: datetime):
         pass
 
     def close(self, position: Position):
@@ -18,7 +17,7 @@ class BrokerBase:
         pass
 
     # events
-    def on_price(self, price: Decimal, handler):
+    def on_price(self, price: float, handler):
         pass
 
     # state

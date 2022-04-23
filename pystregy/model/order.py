@@ -1,17 +1,20 @@
+from enum import IntEnum
 from decimal import Decimal
 
+class Status(IntEnum):
+    CREATED = 0
+    ACCEPTED = 1
+    PARTIAL = 2
+    COMPLETED = 3
+    CANCELLED = 4
+    EXPIRED = 5
+    MARGIN = 6
+
 class Order():
-    id: int
-    size: Decimal
-    price: Decimal
-    commission: Decimal
-    status: int
-    Created, Accepted, Partial, Completed, Cancelled, Expired, Margin = range(7)
+    __slots__ = 'id', 'price', 'size', 'status'
 
-    def __init__(self, size=0, price=0.0):
-        self.tradeid = None
-        self.size = size
+    def __init__(self, id: int, price: Decimal, size: float):
+        self.id = id
         self.price = price
-        self.commission = None
-
-        self.status = self.Created
+        self.size = size
+        self.status = Status.CREATED

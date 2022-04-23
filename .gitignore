@@ -3,6 +3,7 @@ dist
 build
 *.egg-info
 
+venv/
 examples
 api_key.txt
 tests/resources

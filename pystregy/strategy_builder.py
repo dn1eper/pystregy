@@ -43,16 +43,16 @@ __resources = dict((_k, base64.b64decode(_v)) for _k, _v in {resources}.items())
 __broker = GoBroker()
 __strategy = {strategy_type.__name__}(__broker, __resources {args_str} {kwargs_str})
 
-def notify_position(position: Position) -> str:
-    __strategy.notify_position(position)
+def on_position(position: Position) -> str:
+    __strategy.on_position(position)
     return tojson(__broker.get_commands_queue())
 
-def notify_order(order: Order) -> str: 
-    __strategy.notify_order(order)
+def on_order(order: Order) -> str: 
+    __strategy.on_order(order)
     return tojson(__broker.get_commands_queue())
 
-def notify_quote(quote: Quote) -> str: 
-    __strategy.notify_quote(quote)
+def on_quote(quote: Quote) -> str: 
+    __strategy.on_quote(quote)
     return tojson(__broker.get_commands_queue())
 """
     return source_bundle + init_strategy_code

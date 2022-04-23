@@ -25,12 +25,12 @@ class StrategyBase():
         self.broker = broker
         self.resources = resources
 
-    def notify_position(self, position: Position):
+    def on_position(self, position: Position):
         pass
 
-    def notify_order(self, order: Order):
+    def on_order(self, order: Order):
         pass
 
-    def notify_quote(self, quote: Quote):
+    def on_quote(self, quote: Quote):
         pass
    

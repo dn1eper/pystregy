@@ -7,10 +7,10 @@
 # STRATEGY = Strategy(BROKER)
 
 
-# def notify_position(position: Position) -> Repository:
-#     STRATEGY.notify_position(position)
+# def on_position(position: Position) -> Repository:
+#     STRATEGY.on_position(position)
 #     return Service.GetRepo()
 
-# def notify_order(order: Order) -> Repository: 
-#     STRATEGY.notify_order(order)
+# def on_order(order: Order) -> Repository: 
+#     STRATEGY.on_order(order)
 #     return Service.GetRepo()
